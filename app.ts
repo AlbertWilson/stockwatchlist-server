@@ -10,8 +10,8 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: false}));
-app.use(require('./routes/stockwatchlistcontroller'));
-app.use(require('./routes/userauthcontroller'));
+app.use(require('./src/routes/stockwatchlistcontroller'));
+app.use(require('./src/routes/userauthcontroller'));
 
 // Global error handling
 app.use(function (err, _req, res) {
