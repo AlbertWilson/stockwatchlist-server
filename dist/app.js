@@ -14,13 +14,13 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(bodyParser.json());
 app.use(express_1.default.urlencoded({ extended: false }));
-app.use(require('./routes/stockwatchlistcontroller'));
-app.use(require('./routes/userauthcontroller'));
+app.use(require('./src/routes/stockwatchlistcontroller'));
+app.use(require('./src/routes/userauthcontroller'));
 // Global error handling
 app.use(function (err, _req, res) {
 });
 // perform a database connection when the server starts
-mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true }, () => {
+mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => {
     console.log("Connected to DB!");
 });
 // start the Express server
