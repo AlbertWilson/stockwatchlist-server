@@ -39,9 +39,5 @@
   },
   "engines": {
     "node": "16.x"
-  },
-  "keywords": [
-    "example",
-    "heroku"
-  ]
+  }
 }
