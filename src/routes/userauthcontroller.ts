@@ -30,10 +30,10 @@ userauthcontroller.route('/register').post(async (req, res) => {
     }
 })
 
-userauthcontroller.route('/login').post((req, res) => {
+userauthcontroller.route('/login').post(async (req, res) => {
     const userLoggingIn = req.body;
 
-    User.findOne({email: userLoggingIn.email}).then(dbUser => {
+    await User.findOne({email: userLoggingIn.email}).then(dbUser => {
         if (!dbUser) {
             return res.status(404).send("Invalid email or password");
         }

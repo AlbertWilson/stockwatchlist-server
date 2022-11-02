@@ -100,7 +100,7 @@ return stockData;
 stockwatchlistcontroller.route('/stocks').get(verifyJWT, async function (req, res){
   const userId:ObjectId = new ObjectId(req.user.id);
 
-  User.findOne({_id: userId}, async function (err, doc){
+  await User.findOne({_id: userId}, async function (err, doc){
 
     if (err) {
       res.status(404).send(err);
@@ -130,7 +130,7 @@ stockwatchlistcontroller.route('/addStock').post(verifyJWT, async function (req,
 
       const userId:ObjectId = new ObjectId(req.user.id);
 
-      User.findOne({_id: userId}, function(err, doc) {
+      await User.findOne({_id: userId}, function(err, doc) {
         if (err) {
           console.log(err);
           res.status(404).send(err);
@@ -152,7 +152,7 @@ stockwatchlistcontroller.route('/deleteStock').post(verifyJWT, async function (r
 
   const userId:ObjectId = new ObjectId(req.user.id);
 
-  User.findOne({_id: userId}, function(err, doc) {
+  await User.findOne({_id: userId}, function(err, doc) {
     if (err) {
       res.status(404).send(err);
     } else {
