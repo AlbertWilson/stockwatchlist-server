@@ -156,6 +156,8 @@ stockwatchlistcontroller.route('/deleteStock').post(verifyJWT, async function (r
     if (err) {
       res.status(404).send(err);
     } else {
+      console.log(doc.watchlist);
+      console.log(stocksToDelete);
       doc.watchlist = doc.watchlist.filter(item => !stocksToDelete.includes(item));
       doc.save();
       res.send("successful deletion");
