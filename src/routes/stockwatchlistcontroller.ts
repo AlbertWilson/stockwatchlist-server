@@ -1,9 +1,9 @@
 const express = require('express');
 const stockwatchlistcontroller = express.Router();
-import User from '../model/UserSchema';
 import FullStockData from '../model/FullStockData';
 import verifyJWT from '../util/verifyJWT';
 import { ObjectId } from 'mongodb';
+const User = require('../model/UserSchema')
 
 var yahooFinance = require('yahoo-finance');
 

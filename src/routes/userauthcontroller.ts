@@ -2,8 +2,8 @@ const express = require('express');
 const userauthcontroller = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
-import User from '../model/UserSchema';
 import verifyJWT from '../util/verifyJWT';
+const User = require('../model/UserSchema')
 
 userauthcontroller.route('/register').post(async (req, res) => {
     const user = req.body;

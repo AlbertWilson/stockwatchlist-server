@@ -18,9 +18,17 @@ app.use(function (err, _req, res) {
 });
 
 // perform a database connection when the server starts
-mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }, () => {
-  console.log("Connected to DB!")
-});
+
+async function connect(){
+  try{
+    await mongoose.connect(process.env.DB_CONNECTION);
+    console.log("connected to database");
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+connect();
 
 // start the Express server
 app.listen(PORT, () => {
