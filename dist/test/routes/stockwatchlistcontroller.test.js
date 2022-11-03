@@ -13,9 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const stockwatchlistcontroller_1 = __importDefault(require("../../src/routes/stockwatchlistcontroller"));
-describe('Test Stock Controller', function () {
+const globals_1 = require("@jest/globals");
+(0, globals_1.describe)('Test Stock Controller', function () {
     const emptyFunction = () => { };
-    test('responds to /', () => __awaiter(this, void 0, void 0, function* () {
+    (0, globals_1.test)('responds to /', () => __awaiter(this, void 0, void 0, function* () {
         const req = {};
         const res = { text: '',
             send: function (input) { this.text = input; }
@@ -23,7 +24,7 @@ describe('Test Stock Controller', function () {
         yield stockwatchlistcontroller_1.default.route('/deleteStock').post(emptyFunction, req, res);
         // expect(res.text).toEqual('hello world!');
     }));
-    test('responds to /hello/:name', () => __awaiter(this, void 0, void 0, function* () {
+    (0, globals_1.test)('responds to ', () => __awaiter(this, void 0, void 0, function* () {
         const req = { params: { name: 'Bob' } };
         const res = { text: '',
             send: function (input) { this.text = input; }

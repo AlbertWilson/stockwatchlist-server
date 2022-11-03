@@ -1,4 +1,5 @@
 import stockwatchlistcontroller from '../../src/routes/stockwatchlistcontroller';
+import {describe, expect, test} from '@jest/globals';
 
 describe('Test Stock Controller', function () {
 
@@ -15,7 +16,7 @@ describe('Test Stock Controller', function () {
         // expect(res.text).toEqual('hello world!');
     });
 
-    test('responds to /hello/:name', async () => {
+    test('responds to ', async () => {
         const req = { params: { name: 'Bob' }  };
 
         const res = { text: '',

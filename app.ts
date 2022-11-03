@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import stockwatchlistcontroller from './src/routes/stockwatchlistcontroller';
+import userauthcontroller from './src/routes/userauthcontroller'
 dotenv.config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -10,15 +12,14 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({extended: false}));
-app.use(require('./src/routes/stockwatchlistcontroller'));
-app.use(require('./src/routes/userauthcontroller'));
+app.use(stockwatchlistcontroller);
+app.use(userauthcontroller);
 
 // Global error handling
 app.use(function (err, _req, res) {
 });
 
 // perform a database connection when the server starts
-
 async function connect(){
   try{
     await mongoose.connect(process.env.DB_CONNECTION);

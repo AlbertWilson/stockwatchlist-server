@@ -16,8 +16,8 @@ const express = require('express');
 const userauthcontroller = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
-const UserSchema_1 = __importDefault(require("../model/UserSchema"));
 const verifyJWT_1 = __importDefault(require("../util/verifyJWT"));
+const UserSchema_1 = __importDefault(require("../model/UserSchema"));
 userauthcontroller.route('/register').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.body;
     try {
@@ -41,9 +41,9 @@ userauthcontroller.route('/register').post((req, res) => __awaiter(void 0, void 
         res.status(500).send("And error occured: " + err);
     }
 }));
-userauthcontroller.route('/login').post((req, res) => {
+userauthcontroller.route('/login').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userLoggingIn = req.body;
-    UserSchema_1.default.findOne({ email: userLoggingIn.email }).then(dbUser => {
+    yield UserSchema_1.default.findOne({ email: userLoggingIn.email }).then(dbUser => {
         if (!dbUser) {
             return res.status(404).send("Invalid email or password");
         }
@@ -68,11 +68,10 @@ userauthcontroller.route('/login').post((req, res) => {
                 return res.status(404).send({ message: "Invalid email or password" });
             }
         });
-    });
-});
+    }).catch((err) => res.status(500).send({ message: "Error making database call" }));
+}));
 userauthcontroller.route("/isUserAuth").post(verifyJWT_1.default, (req, res) => {
     return res.send({ isLoggedIn: true, firstname: req.user.firstname });
 });
-module.exports = userauthcontroller;
 exports.default = userauthcontroller;
 //# sourceMappingURL=userauthcontroller.js.map

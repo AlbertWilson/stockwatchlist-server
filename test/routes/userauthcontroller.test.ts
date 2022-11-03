@@ -1,33 +1,61 @@
 import userauthcontroller from '../../src/routes/userauthcontroller';
+import { NextFunction, Request, Response } from 'express';
+import User from '../../src/model/UserSchema';
+import {describe, expect, test} from '@jest/globals';
+
 
 describe('Test User Auth Controller', function () {
 
-    test('responds to /login', () => {
-        const req = {
+    let mockRequest: Partial<Request>;
+    let mockResponse: Partial<Response>;
+    let nextFunction: NextFunction = jest.fn();
+
+    beforeEach(() => {
+        mockRequest = {};
+        mockResponse = {
+            send: jest.fn(),
+        };
+    });
+
+    // test('responds to /login', () => {
+    //     mockRequest = {
+    //         body: {
+    //             email: 'avw5331@gmail.com',
+    //             password: 'password'
+    //         }
+    //     };
+
+    //     const userSpy = jest.spyOn(User, 'findOne');
+        
+    //     // userSpy.mockReturnValue();
+
+    //     // const response = userauthcontroller.route('/login').post(mockRequest, mockResponse);
+        
+    //     expect(mockResponse.send).toEqual('hello world!');
+    // });
+
+    test('responds to /register', () => {
+        mockRequest = {
             body: {
                 email: 'avw5331@gmail.com',
-                password: 'anything'
+                password: 'password'
             }
         };
 
-        const res = { text: '',
-            send: function(input) { this.text = input } 
-        };
+        mockResponse.status = function(responseStatus) {
+            return this; 
+        }
 
-        const response = userauthcontroller.route('/login').post(req, res);
+        const controllerToTest = new userauthcontroller();
+        const user = new User();
+
+        const userSpy = jest.spyOn(User, 'findOne');
         
-        expect(res.text).toEqual('hello world!');
-    });
+        // userSpy.mockReturnValue();
+        console.log(typeof User);
 
-    test('responds to /register', () => {
-        const req = { params: { name: 'Bob' }  };
-
-        const res = { text: '',
-            send: function(input) { this.text = input } 
-        };
-        userauthcontroller(req, res);
+        const response = controllerToTest.route('/register').post(mockRequest, mockResponse);
         
-        expect(res.text).toEqual('hello Bob!');
+        expect(mockResponse.send).toEqual('hello world!');
     });
-
 });
