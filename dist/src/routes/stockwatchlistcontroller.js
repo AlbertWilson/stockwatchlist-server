@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const stockwatchlistcontroller = express.Router();
-const UserSchema_1 = __importDefault(require("../model/UserSchema"));
 const verifyJWT_1 = __importDefault(require("../util/verifyJWT"));
 const mongodb_1 = require("mongodb");
+const UserSchema_1 = __importDefault(require("../model/UserSchema"));
 var yahooFinance = require('yahoo-finance');
 function getFullStockDataDailyChange(watchlist) {
     if (watchlist === undefined || watchlist.length == 0) {
@@ -141,9 +141,10 @@ stockwatchlistcontroller.route('/addStock').post(verifyJWT_1.default, function (
                     res.status(404).send(err);
                 }
                 else {
-                    doc.watchlist = [...doc.watchlist, ...newStockWithMonthData.map((stock) => { return stock.symbol; })];
+                    doc.watchlist = [...doc.watchlist, newStockWithMonthData[0].symbol];
                     doc.save();
-                    res.send(newStock);
+                    console.log(newStockWithMonthData);
+                    res.send(newStockWithMonthData[0]);
                 }
             });
         }
@@ -162,6 +163,8 @@ stockwatchlistcontroller.route('/deleteStock').post(verifyJWT_1.default, functio
                 res.status(404).send(err);
             }
             else {
+                console.log(doc.watchlist);
+                console.log(stocksToDelete);
                 doc.watchlist = doc.watchlist.filter(item => !stocksToDelete.includes(item));
                 doc.save();
                 res.send("successful deletion");
@@ -169,6 +172,5 @@ stockwatchlistcontroller.route('/deleteStock').post(verifyJWT_1.default, functio
         });
     });
 });
-module.exports = stockwatchlistcontroller;
 exports.default = stockwatchlistcontroller;
 //# sourceMappingURL=stockwatchlistcontroller.js.map

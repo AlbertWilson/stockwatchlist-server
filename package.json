@@ -8,11 +8,14 @@
     "postinstall": "tsc",
     "lint": "eslint . --ext .ts",
     "test": "jest",
-    "watch": "nodemon"
+    "watch": "nodemon",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/core": "^7.19.6",
+    "@babel/preset-env": "^7.19.4",
     "@types/jest": "^29.2.1",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",

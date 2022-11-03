@@ -4,27 +4,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const userauthcontroller_1 = __importDefault(require("../../src/routes/userauthcontroller"));
-describe('Test User Auth Controller', function () {
-    test('responds to /login', () => {
-        const req = {
+const UserSchema_1 = __importDefault(require("../../src/model/UserSchema"));
+const globals_1 = require("@jest/globals");
+(0, globals_1.describe)('Test User Auth Controller', function () {
+    let mockRequest;
+    let mockResponse;
+    let nextFunction = jest.fn();
+    beforeEach(() => {
+        mockRequest = {};
+        mockResponse = {
+            send: jest.fn(),
+        };
+    });
+    (0, globals_1.test)('responds to /login', () => {
+        mockRequest = {
             body: {
                 email: 'avw5331@gmail.com',
-                password: 'anything'
+                password: 'password'
             }
         };
-        const res = { text: '',
-            send: function (input) { this.text = input; }
-        };
-        const response = userauthcontroller_1.default.route('/login').post(req, res);
-        expect(res.text).toEqual('hello world!');
+        const userSpy = jest.spyOn(UserSchema_1.default, 'findOne');
+        // userSpy.mockReturnValue();
+        const response = userauthcontroller_1.default.route('/login').post(mockRequest, mockResponse);
+        (0, globals_1.expect)(mockResponse.send).toEqual('hello world!');
     });
-    test('responds to /register', () => {
-        const req = { params: { name: 'Bob' } };
-        const res = { text: '',
-            send: function (input) { this.text = input; }
+    (0, globals_1.test)('responds to /register', () => {
+        mockRequest = {
+            body: {
+                email: 'avw5331@gmail.com',
+                password: 'password'
+            }
         };
-        (0, userauthcontroller_1.default)(req, res);
-        expect(res.text).toEqual('hello Bob!');
+        mockResponse.status = function (responseStatus) {
+            return this;
+        };
+        const userSpy = jest.spyOn(UserSchema_1.default, 'findOne');
+        // userSpy.mockReturnValue();
+        console.log(typeof UserSchema_1.default);
+        const response = userauthcontroller_1.default.route('/register').post(mockRequest, mockResponse);
+        (0, globals_1.expect)(mockResponse.send).toEqual('hello world!');
     });
 });
 //# sourceMappingURL=userauthcontroller.test.js.map
