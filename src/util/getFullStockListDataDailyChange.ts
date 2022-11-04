@@ -17,7 +17,7 @@ export default function getFullStockListDataDailyChange(watchlist:String[]): Pro
           symbol: quotes[symbol].price.symbol,
           todayPrice: quotes[symbol].price.regularMarketPrice,
           todayPriceChange: quotes[symbol].price.regularMarketChange,
-          todayPricePercentChange: quotes[symbol].price.regularMarketChange / quotes[symbol].price.regularMarketPrice
+          todayPricePercentChange: (quotes[symbol].price.regularMarketChange / quotes[symbol].price.regularMarketPrice) * 100
         }
         return fullStockInfo;
       })
