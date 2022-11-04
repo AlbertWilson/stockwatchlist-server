@@ -17,92 +17,9 @@ const stockwatchlistcontroller = express.Router();
 const verifyJWT_1 = __importDefault(require("../util/verifyJWT"));
 const mongodb_1 = require("mongodb");
 const UserSchema_1 = __importDefault(require("../model/UserSchema"));
-var yahooFinance = require('yahoo-finance');
-function getFullStockDataDailyChange(watchlist) {
-    if (watchlist === undefined || watchlist.length == 0) {
-        return new Promise(function (resolve, reject) { resolve([]); });
-    }
-    const stockData = yahooFinance.quote({
-        symbols: watchlist,
-        modules: ['price']
-    }).then((quotes) => {
-        return Object.keys(quotes).map((symbol) => {
-            const fullStockInfo = {
-                companyName: quotes[symbol].price.longName,
-                symbol: quotes[symbol].price.symbol,
-                todayPrice: quotes[symbol].price.regularMarketPrice,
-                todayPriceChange: quotes[symbol].price.regularMarketChange,
-                todayPricePercentChange: quotes[symbol].price.regularMarketChangePercent
-            };
-            return fullStockInfo;
-        });
-    }).catch((err) => {
-        throw err;
-    });
-    return stockData;
-}
-function getFullStockDataWeeklyChange(watchlist) {
-    if (watchlist === undefined || watchlist.length == 0) {
-        return new Promise(function (resolve, reject) { resolve([]); });
-    }
-    const stockSymbols = watchlist.map((stock) => { return stock.symbol; });
-    const oneWeekAgo = new Date();
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-    const dayOfWeek = oneWeekAgo.getDay();
-    if (dayOfWeek == 0) {
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 2); // if it's Sunday get the stock price from Friday
-    }
-    else if (dayOfWeek == 6) {
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 1); // if it's Saturday get the stock price from Friday
-    }
-    const stockData = yahooFinance.historical({
-        symbols: stockSymbols,
-        from: oneWeekAgo,
-        to: oneWeekAgo,
-    }).then((quotes) => {
-        return watchlist.map((stock) => {
-            if (quotes[stock.symbol][0] != undefined) {
-                stock.price7DaysAgo = quotes[stock.symbol][0].close;
-            }
-            else {
-                stock.price7DaysAgo = null;
-            }
-            return stock;
-        });
-    });
-    return stockData;
-}
-function getFullStockDataMonthlyChange(watchlist) {
-    if (watchlist === undefined || watchlist.length == 0) {
-        return new Promise(function (resolve, reject) { resolve([]); });
-    }
-    const stockSymbols = watchlist.map((stock) => { return stock.symbol; });
-    const oneMonthAgo = new Date();
-    oneMonthAgo.setDate(oneMonthAgo.getDate() - 30);
-    const dayOfWeek = oneMonthAgo.getDay();
-    if (dayOfWeek == 0) {
-        oneMonthAgo.setDate(oneMonthAgo.getDate() - 2); // if it's Sunday get the stock price from Friday
-    }
-    else if (dayOfWeek == 6) {
-        oneMonthAgo.setDate(oneMonthAgo.getDate() - 1); // if it's Saturday get the stock price from Friday
-    }
-    const stockData = yahooFinance.historical({
-        symbols: stockSymbols,
-        from: oneMonthAgo,
-        to: oneMonthAgo,
-    }).then((quotes) => {
-        return watchlist.map((stock) => {
-            if (quotes[stock.symbol][0] != undefined) {
-                stock.price30DaysAgo = quotes[stock.symbol][0].close;
-            }
-            else {
-                stock.price30DaysAgo = null;
-            }
-            return stock;
-        });
-    });
-    return stockData;
-}
+const getFullStockListDataDailyChange_1 = __importDefault(require("../util/getFullStockListDataDailyChange"));
+const getFullStockListDataWeeklyChange_1 = __importDefault(require("../util/getFullStockListDataWeeklyChange"));
+const getFullStockListDataMonthlyChange_1 = __importDefault(require("../util/getFullStockListDataMonthlyChange"));
 stockwatchlistcontroller.route('/stocks').get(verifyJWT_1.default, function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const userId = new mongodb_1.ObjectId(req.user.id);
@@ -113,9 +30,9 @@ stockwatchlistcontroller.route('/stocks').get(verifyJWT_1.default, function (req
                 }
                 else {
                     try {
-                        const watchlist = yield getFullStockDataDailyChange(doc.watchlist);
-                        const watchlistWithWeekData = yield getFullStockDataWeeklyChange(watchlist);
-                        const watchlistWithMonthData = yield getFullStockDataMonthlyChange(watchlistWithWeekData);
+                        const watchlist = yield (0, getFullStockListDataDailyChange_1.default)(doc.watchlist);
+                        const watchlistWithWeekData = yield (0, getFullStockListDataWeeklyChange_1.default)(watchlist);
+                        const watchlistWithMonthData = yield (0, getFullStockListDataMonthlyChange_1.default)(watchlistWithWeekData);
                         res.send(watchlistWithMonthData);
                     }
                     catch (err) {
@@ -131,9 +48,9 @@ stockwatchlistcontroller.route('/addStock').post(verifyJWT_1.default, function (
     return __awaiter(this, void 0, void 0, function* () {
         const singleStockList = [req.body.symbol];
         try {
-            const newStock = yield getFullStockDataDailyChange(singleStockList);
-            const newStockWithWeekData = yield getFullStockDataWeeklyChange(newStock);
-            const newStockWithMonthData = yield getFullStockDataMonthlyChange(newStockWithWeekData);
+            const newStock = yield (0, getFullStockListDataDailyChange_1.default)(singleStockList);
+            const newStockWithWeekData = yield (0, getFullStockListDataWeeklyChange_1.default)(newStock);
+            const newStockWithMonthData = yield (0, getFullStockListDataMonthlyChange_1.default)(newStockWithWeekData);
             const userId = new mongodb_1.ObjectId(req.user.id);
             UserSchema_1.default.findOne({ _id: userId }, function (err, doc) {
                 if (err) {
@@ -143,7 +60,6 @@ stockwatchlistcontroller.route('/addStock').post(verifyJWT_1.default, function (
                 else {
                     doc.watchlist = [...doc.watchlist, newStockWithMonthData[0].symbol];
                     doc.save();
-                    console.log(newStockWithMonthData);
                     res.send(newStockWithMonthData[0]);
                 }
             });
@@ -163,8 +79,6 @@ stockwatchlistcontroller.route('/deleteStock').post(verifyJWT_1.default, functio
                 res.status(404).send(err);
             }
             else {
-                console.log(doc.watchlist);
-                console.log(stocksToDelete);
                 doc.watchlist = doc.watchlist.filter(item => !stocksToDelete.includes(item));
                 doc.save();
                 res.send("successful deletion");
