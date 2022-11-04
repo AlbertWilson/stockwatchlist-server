@@ -5,7 +5,7 @@ export default function verifyJWTtoken(req, res, next) {
     if (!req.headers || !req.headers['x-access-token']){
       res.status(403).send({message: "Missing JWT token from the 'x-access-token' header", isLoggedIn: false})
     } else {
-      const token = req.headers["x-access-token"]?.split(' ')[1]; // if the token is not empty split to get rid of "bearer"
+      const token = req.headers["x-access-token"]?.split(' ')[1]; // if the token is not empty split to get rid of "Bearer"
 
       if (token) {
         jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => handleVerify(err, decoded))
