@@ -23,7 +23,7 @@ userauthcontroller.route('/register').post((req, res) => __awaiter(void 0, void 
     try {
         const takenEmail = yield UserSchema_1.default.findOne({ email: user.email }); //check to make sure that the email is not taken
         if (takenEmail) {
-            res.status(400).send("email has already been taken");
+            res.status(400).send({ message: "email has already been taken" });
         }
         else {
             user.password = yield bcrypt.hash(req.body.password, 10);
@@ -34,18 +34,18 @@ userauthcontroller.route('/register').post((req, res) => __awaiter(void 0, void 
                 password: user.password
             });
             dbUser.save();
-            res.send("User has been added to database!");
+            res.status(200).send({ message: "User has been added to database!" });
         }
     }
     catch (err) {
-        res.status(500).send("And error occured: " + err);
+        res.status(500).send({ message: err });
     }
 }));
 userauthcontroller.route('/login').post((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userLoggingIn = req.body;
     yield UserSchema_1.default.findOne({ email: userLoggingIn.email }).then(dbUser => {
         if (!dbUser) {
-            return res.status(404).send("Invalid email or password");
+            return res.status(404).send({ message: "Invalid email or password" });
         }
         bcrypt.compare(userLoggingIn.password, dbUser.password)
             .then(isCorrect => {

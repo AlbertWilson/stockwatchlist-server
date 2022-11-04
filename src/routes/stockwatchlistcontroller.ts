@@ -1,6 +1,5 @@
 const express = require('express');
 const stockwatchlistcontroller = express.Router();
-import FullStockData from '../model/FullStockData';
 import verifyJWT from '../util/verifyJWT';
 import { ObjectId } from 'mongodb';
 import User from '../model/UserSchema'

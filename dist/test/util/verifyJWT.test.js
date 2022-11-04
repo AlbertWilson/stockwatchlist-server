@@ -14,6 +14,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const verifyJWT_1 = __importDefault(require("../../src/util/verifyJWT"));
 const globals_1 = require("@jest/globals");
+const mockJWT = jest.requireActual('jsonwebtoken');
+jest.doMock('jsonwebtoken', () => mockJWT);
 (0, globals_1.describe)('JWT Authorization middleware', () => {
     let mockRequest;
     let mockResponse;
@@ -47,15 +49,5 @@ const globals_1 = require("@jest/globals");
         (0, verifyJWT_1.default)(mockRequest, mockResponse, nextFunction);
         (0, globals_1.expect)(mockResponse.send).toBeCalledWith(expectedResponse);
     }));
-    // test('with x-access-token headers', async () => {
-    //     mockRequest = {
-    //         headers: {
-    //             'x-access-token': 'Bearer abc'
-    //         }
-    //     }
-    //     jest.mock('jwt', ()=> jest.fn);
-    //     verifyJWT(mockRequest as Request, mockResponse as Response, nextFunction);
-    //     expect(nextFunction).toBeCalledTimes(1);
-    // });
 });
 //# sourceMappingURL=verifyJWT.test.js.map
